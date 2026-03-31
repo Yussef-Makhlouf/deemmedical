@@ -18,7 +18,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           <a href="/" className="flex items-center">
-            <img src={deemLogo} alt="Deem Medical Technology" className="h-10 w-auto" />
+            <img src={deemLogo} alt="Deem Medical Technology" className="h-10 w-auto mix-blend-multiply dark:mix-blend-screen" />
           </a>
 
           <div className="hidden lg:flex items-center gap-8">
