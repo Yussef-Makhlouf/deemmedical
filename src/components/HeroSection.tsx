@@ -28,7 +28,7 @@ const HeroSection = () => {
           </h1>
 
           <p className="text-lg text-primary-foreground/70 mb-8 max-w-lg">
-            Premium diagnostic, surgical, and monitoring equipment from world-leading manufacturers. Serving hospitals and clinics for over 20 years.
+            Premium diagnostic, surgical, and monitoring equipment from world-leading manufacturers. Your trusted partner for healthcare excellence.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 mb-12">
@@ -43,7 +43,7 @@ const HeroSection = () => {
           <div className="flex flex-wrap gap-6">
             {[
               { icon: Shield, label: "ISO Certified" },
-              { icon: Award, label: "20+ Years Experience" },
+              { icon: Award, label: "Expert Team" },
               { icon: Truck, label: "Nationwide Delivery" },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-2">

@@ -1,7 +1,7 @@
 import { CheckCircle } from "lucide-react";
 
 const stats = [
-  { value: "20+", label: "Years in Business" },
+  { value: "100%", label: "Quality Commitment" },
   { value: "5,000+", label: "Products Delivered" },
   { value: "500+", label: "Healthcare Partners" },
   { value: "24/7", label: "Technical Support" },
@@ -25,7 +25,7 @@ const AboutSection = () => {
               Your Trusted Partner in Medical Equipment
             </h2>
             <p className="text-muted-foreground mb-6 leading-relaxed">
-              For over two decades, Deem Medical Technology has been the preferred medical equipment supplier for hospitals, clinics, and diagnostic centers. We combine deep industry expertise with an unwavering commitment to quality and compliance.
+              Deem Medical Technology is your preferred medical equipment supplier for hospitals, clinics, and diagnostic centers. We combine deep industry expertise with an unwavering commitment to quality and compliance.
             </p>
             <ul className="space-y-3">
               {features.map((feat) => (
