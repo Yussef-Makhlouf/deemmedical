@@ -44,7 +44,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-xs">© 2026 MedEquip Pro. All rights reserved.</p>
+          <p className="text-xs">© 2026 Deem Medical Technology. All rights reserved.</p>
           <div className="flex gap-4 text-xs">
             <a href="#" className="hover:text-primary-foreground transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-primary-foreground transition-colors">Terms of Service</a>

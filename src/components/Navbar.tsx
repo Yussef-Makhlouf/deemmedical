@@ -18,9 +18,9 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16 lg:h-20">
           <a href="#" className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-display font-bold text-lg">M</span>
+              <span className="text-primary-foreground font-display font-bold text-lg">D</span>
             </div>
-            <span className="font-display font-bold text-xl text-foreground">MedEquip Pro</span>
+            <span className="font-display font-bold text-xl text-foreground">Deem Medical Technology</span>
           </a>
 
           <div className="hidden lg:flex items-center gap-8">
