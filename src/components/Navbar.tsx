@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone } from "lucide-react";
-import deemLogo from "@/assets/deem-logo.png";
+import deemLogo from "@/assets/deem-logo.jpg";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 

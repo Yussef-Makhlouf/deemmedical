@@ -1,4 +1,4 @@
-import deemLogo from "@/assets/deem-logo.png";
+import deemLogo from "@/assets/deem-logo.jpg";
 
 const Footer = () => {
   return (
