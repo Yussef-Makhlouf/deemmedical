@@ -6,9 +6,9 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-display font-bold">M</span>
+                <span className="text-primary-foreground font-display font-bold">D</span>
               </div>
-              <span className="font-display font-bold text-lg text-primary-foreground">MedEquip Pro</span>
+              <span className="font-display font-bold text-lg text-primary-foreground">Deem Medical Technology</span>
             </div>
             <p className="text-sm leading-relaxed">
               Your trusted partner for premium medical equipment, serving healthcare facilities nationwide.
@@ -44,7 +44,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-xs">© 2026 MedEquip Pro. All rights reserved.</p>
+          <p className="text-xs">© 2026 Deem Medical Technology. All rights reserved.</p>
           <div className="flex gap-4 text-xs">
             <a href="#" className="hover:text-primary-foreground transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-primary-foreground transition-colors">Terms of Service</a>
