@@ -57,6 +57,7 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+      <RequestDemoDialog open={demoOpen} onOpenChange={setDemoOpen} />
     </section>
   );
 };
