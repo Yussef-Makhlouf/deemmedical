@@ -16,11 +16,8 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <a href="#" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-display font-bold text-lg">D</span>
-            </div>
-            <span className="font-display font-bold text-xl text-foreground">Deem Medical Technology</span>
+          <a href="#" className="flex items-center">
+            <img src={deemLogo} alt="Deem Medical Technology" className="h-10 w-auto" />
           </a>
 
           <div className="hidden lg:flex items-center gap-8">

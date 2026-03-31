@@ -1,14 +1,13 @@
+import deemLogo from "@/assets/deem-logo.png";
+
 const Footer = () => {
   return (
     <footer className="bg-foreground text-primary-foreground/70 py-12">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-display font-bold">D</span>
-              </div>
-              <span className="font-display font-bold text-lg text-primary-foreground">Deem Medical Technology</span>
+            <div className="mb-4">
+              <img src={deemLogo} alt="Deem Medical Technology" className="h-10 w-auto brightness-0 invert" />
             </div>
             <p className="text-sm leading-relaxed">
               Your trusted partner for premium medical equipment, serving healthcare facilities nationwide.
