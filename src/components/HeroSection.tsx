@@ -28,7 +28,7 @@ const HeroSection = () => {
           </h1>
 
           <p className="text-lg text-primary-foreground/70 mb-8 max-w-lg">
-            Premium diagnostic, surgical, and monitoring equipment from world-leading manufacturers. Serving hospitals and clinics for over 20 years.
+            Premium diagnostic, surgical, and monitoring equipment from world-leading manufacturers. Your trusted partner for healthcare excellence.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 mb-12">
