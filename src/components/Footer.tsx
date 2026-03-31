@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           <div>
             <div className="mb-4">
-              <img src={deemLogo} alt="Deem Medical Technology" className="h-10 w-auto brightness-0 invert" />
+              <img src={deemLogo} alt="Deem Medical Technology" className="h-10 w-auto border-2 border-foreground rounded brightness-0 invert" />
             </div>
             <p className="text-sm leading-relaxed">
               Your trusted partner for premium medical equipment, serving healthcare facilities nationwide.
