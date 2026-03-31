@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Award, Truck } from "lucide-react";
 import heroImage from "@/assets/hero-medical.jpg";
+import RequestDemoDialog from "@/components/RequestDemoDialog";
 
 const HeroSection = () => {
+  const [demoOpen, setDemoOpen] = useState(false);
   return (
     <section className="relative min-h-[90vh] flex items-center pt-20">
       <div className="absolute inset-0 z-0">
