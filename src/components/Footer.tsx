@@ -1,8 +1,8 @@
-import deemLogo from "@/assets/deem-logo.png";
+import deemLogo from "@/assets/deem-logo.jpg";
 
 const Footer = () => {
   return (
-    <footer className="bg-foreground text-primary-foreground/70 py-12">
+    <footer className="bg-primary text-primary-foreground/70 py-12">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           <div>

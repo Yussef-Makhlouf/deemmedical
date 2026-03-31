@@ -18,8 +18,8 @@ const HeroSection = () => {
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-4 py-1.5 mb-6">
-            <Shield className="w-4 h-4 text-primary-foreground" />
+          <div className="inline-flex items-center gap-2 bg-accent/20 border border-accent/40 rounded-full px-4 py-1.5 mb-6">
+            <Shield className="w-4 h-4 text-accent" />
             <span className="text-sm font-medium text-primary-foreground">FDA Approved Equipment</span>
           </div>
 
@@ -32,7 +32,7 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 mb-12">
-            <Button size="lg" className="gap-2">
+            <Button size="lg" className="gap-2 bg-accent text-accent-foreground hover:bg-accent/90">
               Browse Equipment <ArrowRight className="w-4 h-4" />
             </Button>
             <Button size="lg" variant="outline" className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground">
