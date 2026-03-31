@@ -2,8 +2,6 @@ import { CheckCircle } from "lucide-react";
 
 const stats = [
   { value: "100%", label: "Quality Commitment" },
-  { value: "5,000+", label: "Products Delivered" },
-  { value: "500+", label: "Healthcare Partners" },
   { value: "24/7", label: "Technical Support" },
 ];
 
