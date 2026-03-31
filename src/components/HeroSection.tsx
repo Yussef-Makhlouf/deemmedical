@@ -43,7 +43,7 @@ const HeroSection = () => {
           <div className="flex flex-wrap gap-6">
             {[
               { icon: Shield, label: "ISO Certified" },
-              { icon: Award, label: "20+ Years Experience" },
+              { icon: Award, label: "Expert Team" },
               { icon: Truck, label: "Nationwide Delivery" },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-2">
