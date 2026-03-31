@@ -23,7 +23,7 @@ const HeroSection = () => {
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 bg-accent/20 border border-accent/40 rounded-full px-4 py-1.5 mb-6">
             <Shield className="w-4 h-4 text-accent" />
-            <span className="text-sm font-medium text-primary-foreground">FDA Approved Equipment</span>
+            <span className="text-sm font-medium text-primary-foreground">SFDA Approved Equipment</span>
           </div>
 
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-primary-foreground leading-[1.1] mb-6">
