@@ -38,7 +38,7 @@ const HeroSection = () => {
             <Button size="lg" className="gap-2 bg-accent text-accent-foreground hover:bg-accent/90">
               Browse Equipment <ArrowRight className="w-4 h-4" />
             </Button>
-            <Button size="lg" variant="outline" className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground">
+            <Button size="lg" variant="outline" className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground" onClick={() => setDemoOpen(true)}>
               Request a Demo
             </Button>
           </div>
