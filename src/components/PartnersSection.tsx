@@ -45,7 +45,7 @@ const PartnersSection = () => {
   }, []);
 
   // Duplicate items for seamless loop
-  const items = [...partnerPlaceholders, ...partnerPlaceholders];
+  const items = [...partners, ...partners];
 
   return (
     <section id="partners" className="py-16 lg:py-24 bg-muted/30">
