@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
+import allergensLogo from "@/assets/partners/allengers.jpg";
 
-const partnerPlaceholders = [
-  { name: "Partner 1" },
-  { name: "Partner 2" },
-  { name: "Partner 3" },
-  { name: "Partner 4" },
-  { name: "Partner 5" },
-  { name: "Partner 6" },
+const partners = [
+  { name: "Allengers", logo: allergensLogo },
+  { name: "Partner 2", logo: null },
+  { name: "Partner 3", logo: null },
+  { name: "Partner 4", logo: null },
+  { name: "Partner 5", logo: null },
+  { name: "Partner 6", logo: null },
 ];
 
 const PartnersSection = () => {
