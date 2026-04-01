@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
+import allergensLogo from "@/assets/partners/allengers.jpg";
 
-const partnerPlaceholders = [
-  { name: "Partner 1" },
-  { name: "Partner 2" },
-  { name: "Partner 3" },
-  { name: "Partner 4" },
-  { name: "Partner 5" },
-  { name: "Partner 6" },
+const partners = [
+  { name: "Allengers", logo: allergensLogo },
+  { name: "Partner 2", logo: null },
+  { name: "Partner 3", logo: null },
+  { name: "Partner 4", logo: null },
+  { name: "Partner 5", logo: null },
+  { name: "Partner 6", logo: null },
 ];
 
 const PartnersSection = () => {
@@ -44,7 +45,7 @@ const PartnersSection = () => {
   }, []);
 
   // Duplicate items for seamless loop
-  const items = [...partnerPlaceholders, ...partnerPlaceholders];
+  const items = [...partners, ...partners];
 
   return (
     <section id="partners" className="py-16 lg:py-24 bg-muted/30">
@@ -65,11 +66,15 @@ const PartnersSection = () => {
           {items.map((partner, index) => (
             <div
               key={index}
-              className="flex-shrink-0 w-40 h-24 bg-background border border-border rounded-xl flex items-center justify-center shadow-sm"
+              className="flex-shrink-0 w-40 h-24 bg-background border border-border rounded-xl flex items-center justify-center shadow-sm p-3"
             >
-              <span className="text-sm text-muted-foreground font-medium">
-                {partner.name}
-              </span>
+              {partner.logo ? (
+                <img src={partner.logo} alt={partner.name} className="max-w-full max-h-full object-contain" />
+              ) : (
+                <span className="text-sm text-muted-foreground font-medium">
+                  {partner.name}
+                </span>
+              )}
             </div>
           ))}
         </div>
