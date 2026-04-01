@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import allergensLogo from "@/assets/partners/allengers.jpg";
+import seesheenLogo from "@/assets/partners/seesheen.png";
 
 const partners = [
   { name: "Allengers", logo: allergensLogo },
-  { name: "Partner 2", logo: null },
+  { name: "Seesheen", logo: seesheenLogo },
   { name: "Partner 3", logo: null },
   { name: "Partner 4", logo: null },
   { name: "Partner 5", logo: null },
