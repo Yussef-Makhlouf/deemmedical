@@ -69,7 +69,7 @@ const PartnersSection = () => {
               className="flex-shrink-0 w-40 h-24 bg-background border border-border rounded-xl flex items-center justify-center shadow-sm p-3"
             >
               {partner.logo ? (
-                <img src={partner.logo} alt={partner.name} className="max-w-full max-h-full object-contain" />
+                <img src={partner.logo} alt={partner.name} className="w-full h-full object-cover rounded-xl" />
               ) : (
                 <span className="text-sm text-muted-foreground font-medium">
                   {partner.name}
