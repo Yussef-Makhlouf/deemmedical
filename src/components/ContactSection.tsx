@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const contactInfo = [
   { icon: MapPin, label: "123 Medical Center Blvd, Suite 200, Houston, TX 77001" },
@@ -11,6 +14,25 @@ const contactInfo = [
 ];
 
 const ContactSection = () => {
+  const { toast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    name: "", organization: "", email: "", phone: "", interest: "", message: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    const { error } = await supabase.from("inquiries").insert(form);
+    setSubmitting(false);
+    if (error) {
+      toast({ title: "Error", description: "Failed to submit. Please try again.", variant: "destructive" });
+    } else {
+      toast({ title: "Inquiry Submitted", description: "We'll get back to you within 24 hours." });
+      setForm({ name: "", organization: "", email: "", phone: "", interest: "", message: "" });
+    }
+  };
+
   return (
     <section id="contact" className="py-20 lg:py-28 bg-muted/50">
       <div className="container mx-auto px-4 lg:px-8">
@@ -23,7 +45,6 @@ const ContactSection = () => {
             <p className="text-muted-foreground mb-8 leading-relaxed">
               Our equipment specialists are ready to help you find the right solution for your facility. Fill out the form and we'll get back to you within 24 hours.
             </p>
-
             <div className="space-y-4">
               {contactInfo.map((item) => (
                 <div key={item.label} className="flex items-start gap-3">
@@ -35,36 +56,38 @@ const ContactSection = () => {
           </div>
 
           <div className="bg-card border border-border rounded-xl p-6 lg:p-8 shadow-sm">
-            <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name</label>
-                  <Input placeholder="John Smith" />
+                  <Input required maxLength={100} placeholder="John Smith" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Organization</label>
-                  <Input placeholder="Hospital / Clinic name" />
+                  <Input maxLength={150} placeholder="Hospital / Clinic name" value={form.organization} onChange={(e) => setForm({ ...form, organization: e.target.value })} />
                 </div>
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Email</label>
-                  <Input type="email" placeholder="john@hospital.com" />
+                  <Input type="email" required maxLength={255} placeholder="john@hospital.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Phone</label>
-                  <Input type="tel" placeholder="(555) 000-0000" />
+                  <Input type="tel" maxLength={20} placeholder="(555) 000-0000" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 </div>
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground mb-1.5 block">Equipment Interest</label>
-                <Input placeholder="e.g., MRI System, Patient Monitors" />
+                <Input maxLength={200} placeholder="e.g., MRI System, Patient Monitors" value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })} />
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground mb-1.5 block">Message</label>
-                <Textarea placeholder="Tell us about your requirements..." rows={4} />
+                <Textarea maxLength={1000} placeholder="Tell us about your requirements..." rows={4} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
               </div>
-              <Button className="w-full" size="lg">Submit Inquiry</Button>
+              <Button className="w-full" size="lg" type="submit" disabled={submitting}>
+                {submitting ? "Submitting..." : "Submit Inquiry"}
+              </Button>
             </form>
           </div>
         </div>
