@@ -151,6 +151,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean | null
+          product_range_id: string | null
           sort_order: number | null
           title: string
           updated_at: string | null
@@ -162,6 +163,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          product_range_id?: string | null
           sort_order?: number | null
           title: string
           updated_at?: string | null
@@ -173,11 +175,20 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          product_range_id?: string | null
           sort_order?: number | null
           title?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_product_range_id_fkey"
+            columns: ["product_range_id"]
+            isOneToOne: false
+            referencedRelation: "product_ranges"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
