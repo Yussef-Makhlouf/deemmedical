@@ -1,0 +1,1 @@
+ALTER TABLE public.products ADD COLUMN product_range_id uuid REFERENCES public.product_ranges(id) ON DELETE SET NULL;
