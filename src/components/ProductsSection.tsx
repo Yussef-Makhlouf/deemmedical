@@ -1,35 +1,45 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import imagingImg from "@/assets/product-imaging.jpg";
-import monitoringImg from "@/assets/product-monitoring.jpg";
-import surgicalImg from "@/assets/product-surgical.jpg";
-import labImg from "@/assets/product-lab.jpg";
-
-const products = [
-  {
-    title: "Diagnostic Imaging",
-    description: "MRI, CT scanners, X-ray, and ultrasound systems from top manufacturers.",
-    image: imagingImg,
-  },
-  {
-    title: "Patient Monitoring",
-    description: "Vital signs monitors, telemetry systems, and bedside monitoring solutions.",
-    image: monitoringImg,
-  },
-  {
-    title: "Surgical Instruments",
-    description: "Precision surgical tools, electrosurgical units, and OR equipment.",
-    image: surgicalImg,
-  },
-  {
-    title: "Laboratory Equipment",
-    description: "Analyzers, centrifuges, and diagnostic testing instruments.",
-    image: labImg,
-  },
-];
+import { ArrowRight, Package } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const ProductsSection = () => {
+  const { data: ranges, isLoading: rangesLoading } = useQuery({
+    queryKey: ["public-product-ranges"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("product_ranges")
+        .select("*")
+        .order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: products, isLoading: productsLoading } = useQuery({
+    queryKey: ["public-products"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const isLoading = rangesLoading || productsLoading;
+
+  const groupedProducts = ranges?.map((range) => ({
+    ...range,
+    products: products?.filter((p) => p.product_range_id === range.id) || [],
+  }));
+
+  // Products without a category
+  const uncategorized = products?.filter((p) => !p.product_range_id) || [];
+
   return (
     <section id="products" className="py-20 lg:py-28">
       <div className="container mx-auto px-4 lg:px-8">
@@ -43,36 +53,79 @@ const ProductsSection = () => {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product, i) => (
-            <Card
-              key={product.title}
-              className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300"
-              style={{ animationDelay: `${i * 100}ms` }}
-            >
-              <div className="aspect-[4/3] overflow-hidden">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  width={800}
-                  height={600}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+        {isLoading ? (
+          <div className="text-center text-muted-foreground py-12">Loading products...</div>
+        ) : (
+          <div className="space-y-16">
+            {groupedProducts?.map((range) =>
+              range.products.length > 0 ? (
+                <div key={range.id}>
+                  <div className="mb-6">
+                    <h3 className="font-display text-2xl font-bold text-foreground">{range.name}</h3>
+                    {range.description && (
+                      <p className="text-muted-foreground mt-1">{range.description}</p>
+                    )}
+                  </div>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {range.products.map((product, i) => (
+                      <ProductCard key={product.id} product={product} index={i} />
+                    ))}
+                  </div>
+                </div>
+              ) : null
+            )}
+
+            {uncategorized.length > 0 && (
+              <div>
+                <div className="mb-6">
+                  <h3 className="font-display text-2xl font-bold text-foreground">Other Products</h3>
+                </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {uncategorized.map((product, i) => (
+                    <ProductCard key={product.id} product={product} index={i} />
+                  ))}
+                </div>
               </div>
-              <CardContent className="p-5">
-                <h3 className="font-display font-semibold text-lg text-foreground mb-1">{product.title}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
-                <Button variant="ghost" size="sm" className="gap-1 px-0 text-primary hover:text-primary/80">
-                  Learn More <ArrowRight className="w-3.5 h-3.5" />
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+            )}
+
+            {(!products || products.length === 0) && (
+              <div className="text-center text-muted-foreground py-12">
+                No products available yet. Check back soon!
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );
 };
+
+const ProductCard = ({ product, index }: { product: any; index: number }) => (
+  <Card
+    className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300"
+    style={{ animationDelay: `${index * 100}ms` }}
+  >
+    <div className="aspect-[4/3] overflow-hidden bg-muted">
+      {product.image_url ? (
+        <img
+          src={product.image_url}
+          alt={product.title}
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center">
+          <Package className="w-12 h-12 text-muted-foreground/40" />
+        </div>
+      )}
+    </div>
+    <CardContent className="p-5">
+      <h3 className="font-display font-semibold text-lg text-foreground mb-1">{product.title}</h3>
+      {product.description && (
+        <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
+      )}
+    </CardContent>
+  </Card>
+);
 
 export default ProductsSection;

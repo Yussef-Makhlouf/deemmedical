@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Pencil, Upload } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -17,13 +18,22 @@ const AdminProducts = () => {
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", description: "", category: "", sort_order: 0 });
+  const [form, setForm] = useState({ title: "", description: "", category: "", sort_order: 0, product_range_id: "" });
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["admin-products"],
     queryFn: async () => {
       const { data, error } = await supabase.from("products").select("*").order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: ranges } = useQuery({
+    queryKey: ["admin-product-ranges"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("product_ranges").select("*").order("sort_order");
       if (error) throw error;
       return data;
     },
@@ -43,17 +53,20 @@ const AdminProducts = () => {
       let image_url: string | undefined;
       if (imageFile) image_url = await uploadImage(imageFile);
 
+      const payload = {
+        title: form.title,
+        description: form.description,
+        category: form.category,
+        sort_order: form.sort_order,
+        product_range_id: form.product_range_id || null,
+        ...(image_url && { image_url }),
+      };
+
       if (editingId) {
-        const { error } = await supabase.from("products").update({
-          ...form,
-          ...(image_url && { image_url }),
-        }).eq("id", editingId);
+        const { error } = await supabase.from("products").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("products").insert({
-          ...form,
-          ...(image_url && { image_url }),
-        });
+        const { error } = await supabase.from("products").insert(payload);
         if (error) throw error;
       }
     },
@@ -87,7 +100,7 @@ const AdminProducts = () => {
   const closeDialog = () => {
     setDialogOpen(false);
     setEditingId(null);
-    setForm({ title: "", description: "", category: "", sort_order: 0 });
+    setForm({ title: "", description: "", category: "", sort_order: 0, product_range_id: "" });
     setImageFile(null);
   };
 
@@ -98,8 +111,14 @@ const AdminProducts = () => {
       description: product.description || "",
       category: product.category || "",
       sort_order: product.sort_order || 0,
+      product_range_id: product.product_range_id || "",
     });
     setDialogOpen(true);
+  };
+
+  const getRangeName = (rangeId: string | null) => {
+    if (!rangeId) return "—";
+    return ranges?.find((r) => r.id === rangeId)?.name || "—";
   };
 
   return (
@@ -121,6 +140,7 @@ const AdminProducts = () => {
                   <TableHead>Image</TableHead>
                   <TableHead>Title</TableHead>
                   <TableHead>Category</TableHead>
+                  <TableHead>Product Range</TableHead>
                   <TableHead>Active</TableHead>
                   <TableHead>Order</TableHead>
                   <TableHead>Actions</TableHead>
@@ -138,6 +158,7 @@ const AdminProducts = () => {
                     </TableCell>
                     <TableCell className="font-medium">{p.title}</TableCell>
                     <TableCell>{p.category}</TableCell>
+                    <TableCell>{getRangeName(p.product_range_id)}</TableCell>
                     <TableCell>
                       <Switch checked={p.is_active ?? true} onCheckedChange={(v) => toggleActive.mutate({ id: p.id, is_active: v })} />
                     </TableCell>
@@ -151,7 +172,7 @@ const AdminProducts = () => {
                   </TableRow>
                 ))}
                 {!products?.length && (
-                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No products yet</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No products yet</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
@@ -173,9 +194,23 @@ const AdminProducts = () => {
               <Label>Description</Label>
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
             </div>
+            <div className="space-y-1.5">
+              <Label>Product Range (Category)</Label>
+              <Select value={form.product_range_id} onValueChange={(v) => setForm({ ...form, product_range_id: v === "none" ? "" : v })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a product range" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No range</SelectItem>
+                  {ranges?.map((r) => (
+                    <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label>Category</Label>
+                <Label>Category (text)</Label>
                 <Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
               </div>
               <div className="space-y-1.5">
