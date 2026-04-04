@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Package } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import Autoplay from "embla-carousel-autoplay";
 import {
   Carousel,
   CarouselContent,
