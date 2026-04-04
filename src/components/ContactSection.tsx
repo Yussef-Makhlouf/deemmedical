@@ -7,9 +7,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const contactInfo = [
-  { icon: MapPin, label: "123 Medical Center Blvd, Suite 200, Houston, TX 77001" },
-  { icon: Phone, label: "1-800-555-0000" },
-  { icon: Mail, label: "sales@medequippro.com" },
+  { icon: MapPin, label: "Riyadh, Saudi Arabia" },
+  { icon: Phone, label: "+966 XX XXX XXXX" },
+  { icon: Mail, label: "info@deemmedical.com" },
   { icon: Clock, label: "Mon – Fri: 8:00 AM – 6:00 PM" },
 ];
 
@@ -60,7 +60,7 @@ const ContactSection = () => {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name</label>
-                  <Input required maxLength={100} placeholder="John Smith" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                  <Input required maxLength={100} placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Organization</label>
@@ -70,11 +70,11 @@ const ContactSection = () => {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Email</label>
-                  <Input type="email" required maxLength={255} placeholder="john@hospital.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                  <Input type="email" required maxLength={255} placeholder="email@hospital.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Phone</label>
-                  <Input type="tel" maxLength={20} placeholder="(555) 000-0000" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  <Input type="tel" maxLength={20} placeholder="+966 5XX XXX XXXX" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 </div>
               </div>
               <div>
