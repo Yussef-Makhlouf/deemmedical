@@ -74,7 +74,7 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Phone</label>
-                  <Input type="tel" maxLength={20} placeholder="(555) 000-0000" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  <Input type="tel" maxLength={20} placeholder="+966 5XX XXX XXXX" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 </div>
               </div>
               <div>
