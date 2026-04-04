@@ -70,7 +70,7 @@ const ContactSection = () => {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Email</label>
-                  <Input type="email" required maxLength={255} placeholder="john@hospital.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                  <Input type="email" required maxLength={255} placeholder="email@hospital.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Phone</label>
