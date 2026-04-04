@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Package } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import Autoplay from "embla-carousel-autoplay";
 import {
   Carousel,
   CarouselContent,
@@ -99,7 +100,11 @@ const ProductsSection = () => {
 
 const ProductSlider = ({ products }: { products: any[] }) => (
   <div className="px-10">
-    <Carousel opts={{ align: "start", loop: products.length > 3 }} className="w-full">
+    <Carousel
+      opts={{ align: "start", loop: true }}
+      plugins={[Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true })]}
+      className="w-full"
+    >
       <CarouselContent>
         {products.map((product, i) => (
           <CarouselItem key={product.id} className="basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
