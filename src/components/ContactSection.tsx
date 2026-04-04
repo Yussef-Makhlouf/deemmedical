@@ -7,9 +7,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const contactInfo = [
-  { icon: MapPin, label: "123 Medical Center Blvd, Suite 200, Houston, TX 77001" },
-  { icon: Phone, label: "1-800-555-0000" },
-  { icon: Mail, label: "sales@medequippro.com" },
+  { icon: MapPin, label: "Riyadh, Saudi Arabia" },
+  { icon: Phone, label: "+966 XX XXX XXXX" },
+  { icon: Mail, label: "info@deemmedical.com" },
   { icon: Clock, label: "Mon – Fri: 8:00 AM – 6:00 PM" },
 ];
 
