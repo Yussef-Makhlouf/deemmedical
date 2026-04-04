@@ -60,7 +60,7 @@ const ContactSection = () => {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name</label>
-                  <Input required maxLength={100} placeholder="John Smith" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                  <Input required maxLength={100} placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Organization</label>
