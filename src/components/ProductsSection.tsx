@@ -1,8 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Package } from "lucide-react";
+import { Package } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 
 const ProductsSection = () => {
   const { data: ranges, isLoading: rangesLoading } = useQuery({
@@ -37,7 +43,6 @@ const ProductsSection = () => {
     products: products?.filter((p) => p.product_range_id === range.id) || [],
   }));
 
-  // Products without a category
   const uncategorized = products?.filter((p) => !p.product_range_id) || [];
 
   return (
@@ -66,11 +71,7 @@ const ProductsSection = () => {
                       <p className="text-muted-foreground mt-1">{range.description}</p>
                     )}
                   </div>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {range.products.map((product, i) => (
-                      <ProductCard key={product.id} product={product} index={i} />
-                    ))}
-                  </div>
+                  <ProductSlider products={range.products} />
                 </div>
               ) : null
             )}
@@ -80,11 +81,7 @@ const ProductsSection = () => {
                 <div className="mb-6">
                   <h3 className="font-display text-2xl font-bold text-foreground">Other Products</h3>
                 </div>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {uncategorized.map((product, i) => (
-                    <ProductCard key={product.id} product={product} index={i} />
-                  ))}
-                </div>
+                <ProductSlider products={uncategorized} />
               </div>
             )}
 
@@ -100,11 +97,24 @@ const ProductsSection = () => {
   );
 };
 
+const ProductSlider = ({ products }: { products: any[] }) => (
+  <div className="px-10">
+    <Carousel opts={{ align: "start", loop: products.length > 3 }} className="w-full">
+      <CarouselContent>
+        {products.map((product, i) => (
+          <CarouselItem key={product.id} className="basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+            <ProductCard product={product} index={i} />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  </div>
+);
+
 const ProductCard = ({ product, index }: { product: any; index: number }) => (
-  <Card
-    className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300"
-    style={{ animationDelay: `${index * 100}ms` }}
-  >
+  <Card className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300">
     <div className="aspect-[4/3] overflow-hidden bg-muted">
       {product.image_url ? (
         <img
