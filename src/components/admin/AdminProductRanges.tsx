@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, Pencil } from "lucide-react";
+import { Plus, Trash2, Pencil, Save, ImageIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const AdminProductRanges = () => {
@@ -17,6 +17,7 @@ const AdminProductRanges = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", description: "", sort_order: 0 });
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const { data: ranges, isLoading } = useQuery({
     queryKey: ["admin-product-ranges"],
@@ -27,13 +28,27 @@ const AdminProductRanges = () => {
     },
   });
 
+  const uploadImage = async (file: File) => {
+    const ext = file.name.split(".").pop();
+    const path = `range-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, file);
+    if (error) throw error;
+    const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
+    return urlData.publicUrl;
+  };
+
   const saveMutation = useMutation({
     mutationFn: async () => {
+      let image_url: string | undefined;
+      if (imageFile) {
+        image_url = await uploadImage(imageFile);
+      }
+      const payload = { ...form, ...(image_url ? { image_url } : {}) };
       if (editingId) {
-        const { error } = await supabase.from("product_ranges").update(form).eq("id", editingId);
+        const { error } = await supabase.from("product_ranges").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("product_ranges").insert(form);
+        const { error } = await supabase.from("product_ranges").insert(payload);
         if (error) throw error;
       }
     },
@@ -60,6 +75,7 @@ const AdminProductRanges = () => {
     setDialogOpen(false);
     setEditingId(null);
     setForm({ name: "", description: "", sort_order: 0 });
+    setImageFile(null);
   };
 
   const openEdit = (range: NonNullable<typeof ranges>[0]) => {
@@ -81,8 +97,9 @@ const AdminProductRanges = () => {
           <p className="text-muted-foreground">Loading...</p>
         ) : (
           <Table>
-            <TableHeader>
+             <TableHeader>
               <TableRow>
+                <TableHead>Image</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Order</TableHead>
@@ -92,6 +109,13 @@ const AdminProductRanges = () => {
             <TableBody>
               {ranges?.map((r) => (
                 <TableRow key={r.id}>
+                  <TableCell>
+                    {r.image_url ? (
+                      <img src={r.image_url} alt={r.name} className="w-12 h-12 object-cover rounded" />
+                    ) : (
+                      <ImageIcon className="w-6 h-6 text-muted-foreground/40" />
+                    )}
+                  </TableCell>
                   <TableCell className="font-medium">{r.name}</TableCell>
                   <TableCell className="text-sm text-muted-foreground max-w-xs truncate">{r.description}</TableCell>
                   <TableCell>{r.sort_order}</TableCell>
@@ -104,7 +128,7 @@ const AdminProductRanges = () => {
                 </TableRow>
               ))}
               {!ranges?.length && (
-                <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">No product ranges yet</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No product ranges yet</TableCell></TableRow>
               )}
             </TableBody>
           </Table>
@@ -126,10 +150,15 @@ const AdminProductRanges = () => {
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
             </div>
             <div className="space-y-1.5">
+              <Label>Range Image</Label>
+              <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
+            </div>
+            <div className="space-y-1.5">
               <Label>Sort Order</Label>
               <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
             </div>
-            <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+            <Button type="submit" className="w-full gap-2" disabled={saveMutation.isPending}>
+              <Save className="w-4 h-4" />
               {saveMutation.isPending ? "Saving..." : "Save Range"}
             </Button>
           </form>
