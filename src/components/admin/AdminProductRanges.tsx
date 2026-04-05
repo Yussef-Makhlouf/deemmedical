@@ -97,8 +97,9 @@ const AdminProductRanges = () => {
           <p className="text-muted-foreground">Loading...</p>
         ) : (
           <Table>
-            <TableHeader>
+             <TableHeader>
               <TableRow>
+                <TableHead>Image</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Order</TableHead>
@@ -108,6 +109,13 @@ const AdminProductRanges = () => {
             <TableBody>
               {ranges?.map((r) => (
                 <TableRow key={r.id}>
+                  <TableCell>
+                    {r.image_url ? (
+                      <img src={r.image_url} alt={r.name} className="w-12 h-12 object-cover rounded" />
+                    ) : (
+                      <ImageIcon className="w-6 h-6 text-muted-foreground/40" />
+                    )}
+                  </TableCell>
                   <TableCell className="font-medium">{r.name}</TableCell>
                   <TableCell className="text-sm text-muted-foreground max-w-xs truncate">{r.description}</TableCell>
                   <TableCell>{r.sort_order}</TableCell>
@@ -120,7 +128,7 @@ const AdminProductRanges = () => {
                 </TableRow>
               ))}
               {!ranges?.length && (
-                <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">No product ranges yet</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No product ranges yet</TableCell></TableRow>
               )}
             </TableBody>
           </Table>
@@ -142,10 +150,15 @@ const AdminProductRanges = () => {
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
             </div>
             <div className="space-y-1.5">
+              <Label>Range Image</Label>
+              <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
+            </div>
+            <div className="space-y-1.5">
               <Label>Sort Order</Label>
               <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
             </div>
-            <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+            <Button type="submit" className="w-full gap-2" disabled={saveMutation.isPending}>
+              <Save className="w-4 h-4" />
               {saveMutation.isPending ? "Saving..." : "Save Range"}
             </Button>
           </form>
