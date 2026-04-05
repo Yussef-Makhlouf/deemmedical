@@ -239,7 +239,8 @@ const AdminProducts = () => {
                 <input id="product-img-input" type="file" accept="image/*" className="hidden" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
               </div>
             </div>
-            <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+            <Button type="submit" className="w-full gap-2" disabled={saveMutation.isPending}>
+              <Save className="w-4 h-4" />
               {saveMutation.isPending ? "Saving..." : "Save Product"}
             </Button>
           </form>
