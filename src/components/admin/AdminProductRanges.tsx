@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, Pencil } from "lucide-react";
+import { Plus, Trash2, Pencil, Save, ImageIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const AdminProductRanges = () => {
@@ -17,6 +17,7 @@ const AdminProductRanges = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", description: "", sort_order: 0 });
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const { data: ranges, isLoading } = useQuery({
     queryKey: ["admin-product-ranges"],
@@ -27,13 +28,27 @@ const AdminProductRanges = () => {
     },
   });
 
+  const uploadImage = async (file: File) => {
+    const ext = file.name.split(".").pop();
+    const path = `range-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, file);
+    if (error) throw error;
+    const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
+    return urlData.publicUrl;
+  };
+
   const saveMutation = useMutation({
     mutationFn: async () => {
+      let image_url: string | undefined;
+      if (imageFile) {
+        image_url = await uploadImage(imageFile);
+      }
+      const payload = { ...form, ...(image_url ? { image_url } : {}) };
       if (editingId) {
-        const { error } = await supabase.from("product_ranges").update(form).eq("id", editingId);
+        const { error } = await supabase.from("product_ranges").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("product_ranges").insert(form);
+        const { error } = await supabase.from("product_ranges").insert(payload);
         if (error) throw error;
       }
     },
@@ -60,6 +75,7 @@ const AdminProductRanges = () => {
     setDialogOpen(false);
     setEditingId(null);
     setForm({ name: "", description: "", sort_order: 0 });
+    setImageFile(null);
   };
 
   const openEdit = (range: NonNullable<typeof ranges>[0]) => {
