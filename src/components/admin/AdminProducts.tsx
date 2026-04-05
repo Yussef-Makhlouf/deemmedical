@@ -185,7 +185,7 @@ const AdminProducts = () => {
       </CardContent>
 
       <Dialog open={dialogOpen} onOpenChange={(o) => !o && closeDialog()}>
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingId ? "Edit Product" : "Add Product"}</DialogTitle>
           </DialogHeader>
