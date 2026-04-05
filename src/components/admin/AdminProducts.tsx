@@ -18,7 +18,7 @@ const AdminProducts = () => {
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", description: "", category: "", sort_order: 0, product_range_id: "" });
+  const [form, setForm] = useState({ title: "", description: "", category: "", sort_order: 0, product_range_id: "", video_url: "", specifications: "" });
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const { data: products, isLoading } = useQuery({
@@ -59,6 +59,8 @@ const AdminProducts = () => {
         category: form.category,
         sort_order: form.sort_order,
         product_range_id: form.product_range_id || null,
+        video_url: form.video_url || null,
+        specifications: form.specifications || null,
         ...(image_url && { image_url }),
       };
 
@@ -100,7 +102,7 @@ const AdminProducts = () => {
   const closeDialog = () => {
     setDialogOpen(false);
     setEditingId(null);
-    setForm({ title: "", description: "", category: "", sort_order: 0, product_range_id: "" });
+    setForm({ title: "", description: "", category: "", sort_order: 0, product_range_id: "", video_url: "", specifications: "" });
     setImageFile(null);
   };
 
@@ -112,6 +114,8 @@ const AdminProducts = () => {
       category: product.category || "",
       sort_order: product.sort_order || 0,
       product_range_id: product.product_range_id || "",
+      video_url: (product as any).video_url || "",
+      specifications: (product as any).specifications || "",
     });
     setDialogOpen(true);
   };
@@ -217,6 +221,14 @@ const AdminProducts = () => {
                 <Label>Sort Order</Label>
                 <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
               </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Specifications</Label>
+              <Textarea value={form.specifications} onChange={(e) => setForm({ ...form, specifications: e.target.value })} placeholder="Enter product specifications..." />
+            </div>
+            <div className="space-y-1.5">
+              <Label>YouTube Video URL (optional)</Label>
+              <Input value={form.video_url} onChange={(e) => setForm({ ...form, video_url: e.target.value })} placeholder="https://www.youtube.com/watch?v=..." />
             </div>
             <div className="space-y-1.5">
               <Label>Image</Label>

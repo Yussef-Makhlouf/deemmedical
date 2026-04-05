@@ -3,6 +3,7 @@ import { Package } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Autoplay from "embla-carousel-autoplay";
+import { useNavigate } from "react-router-dom";
 import {
   Carousel,
   CarouselContent,
@@ -118,29 +119,35 @@ const ProductSlider = ({ products }: { products: any[] }) => (
   </div>
 );
 
-const ProductCard = ({ product, index }: { product: any; index: number }) => (
-  <Card className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-    <div className="aspect-[4/3] overflow-hidden bg-muted">
-      {product.image_url ? (
-        <img
-          src={product.image_url}
-          alt={product.title}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center">
-          <Package className="w-12 h-12 text-muted-foreground/40" />
-        </div>
-      )}
-    </div>
-    <CardContent className="p-5">
-      <h3 className="font-display font-semibold text-lg text-foreground mb-1">{product.title}</h3>
-      {product.description && (
-        <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
-      )}
-    </CardContent>
-  </Card>
-);
+const ProductCard = ({ product, index }: { product: any; index: number }) => {
+  const navigate = useNavigate();
+  return (
+    <Card
+      className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300 cursor-pointer"
+      onClick={() => navigate(`/products/${product.id}`)}
+    >
+      <div className="aspect-[4/3] overflow-hidden bg-muted">
+        {product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.title}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <Package className="w-12 h-12 text-muted-foreground/40" />
+          </div>
+        )}
+      </div>
+      <CardContent className="p-5">
+        <h3 className="font-display font-semibold text-lg text-foreground mb-1">{product.title}</h3>
+        {product.description && (
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{product.description}</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
 
 export default ProductsSection;

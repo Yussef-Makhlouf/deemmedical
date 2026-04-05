@@ -153,8 +153,10 @@ export type Database = {
           is_active: boolean | null
           product_range_id: string | null
           sort_order: number | null
+          specifications: string | null
           title: string
           updated_at: string | null
+          video_url: string | null
         }
         Insert: {
           category?: string | null
@@ -165,8 +167,10 @@ export type Database = {
           is_active?: boolean | null
           product_range_id?: string | null
           sort_order?: number | null
+          specifications?: string | null
           title: string
           updated_at?: string | null
+          video_url?: string | null
         }
         Update: {
           category?: string | null
@@ -177,8 +181,10 @@ export type Database = {
           is_active?: boolean | null
           product_range_id?: string | null
           sort_order?: number | null
+          specifications?: string | null
           title?: string
           updated_at?: string | null
+          video_url?: string | null
         }
         Relationships: [
           {
