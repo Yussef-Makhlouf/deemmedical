@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, Pencil, Upload } from "lucide-react";
+import { Plus, Trash2, Pencil, Upload, Save } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const AdminProducts = () => {
@@ -239,7 +239,8 @@ const AdminProducts = () => {
                 <input id="product-img-input" type="file" accept="image/*" className="hidden" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
               </div>
             </div>
-            <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+            <Button type="submit" className="w-full gap-2" disabled={saveMutation.isPending}>
+              <Save className="w-4 h-4" />
               {saveMutation.isPending ? "Saving..." : "Save Product"}
             </Button>
           </form>
