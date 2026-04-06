@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +12,10 @@ const Products = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const rangeId = searchParams.get("range");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [rangeId]);
 
   const { data: ranges } = useQuery({
     queryKey: ["product-ranges"],
