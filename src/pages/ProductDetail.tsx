@@ -11,6 +11,10 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
   const { data: product, isLoading } = useQuery({
     queryKey: ["product-detail", id],
     queryFn: async () => {
