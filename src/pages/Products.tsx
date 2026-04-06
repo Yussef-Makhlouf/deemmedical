@@ -16,7 +16,6 @@ const Products = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [rangeId]);
-  const rangeId = searchParams.get("range");
 
   const { data: ranges } = useQuery({
     queryKey: ["product-ranges"],
