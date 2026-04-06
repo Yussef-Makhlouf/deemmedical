@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +11,11 @@ import { Package, ArrowLeft } from "lucide-react";
 const Products = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const rangeId = searchParams.get("range");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [rangeId]);
   const rangeId = searchParams.get("range");
 
   const { data: ranges } = useQuery({
