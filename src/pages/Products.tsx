@@ -7,6 +7,14 @@ import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Package, ArrowLeft } from "lucide-react";
+import Autoplay from "embla-carousel-autoplay";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 
 const Products = () => {
   const [searchParams] = useSearchParams();
@@ -104,43 +112,59 @@ const Products = () => {
               </div>
             )}
 
-            {/* Products grid */}
+            {/* Products slider */}
             {isLoading ? (
               <div className="text-center text-muted-foreground py-12">Loading products...</div>
             ) : products && products.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {products.map((product) => (
-                  <Card
-                    key={product.id}
-                    className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300 cursor-pointer"
-                    onClick={() => navigate(`/products/${product.id}`)}
-                  >
-                    <div className="aspect-[4/3] overflow-hidden bg-muted">
-                      {product.image_url ? (
-                        <img
-                          src={product.image_url}
-                          alt={product.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Package className="w-12 h-12 text-muted-foreground/40" />
-                        </div>
-                      )}
-                    </div>
-                    <CardContent className="p-5">
-                      <h3 className="font-display font-semibold text-lg text-foreground mb-1">
-                        {product.title}
-                      </h3>
-                      {product.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {product.description}
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
+              <div className="px-10">
+                <Carousel
+                  opts={{ align: "start", loop: true }}
+                  plugins={[
+                    Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true }),
+                  ]}
+                  className="w-full"
+                >
+                  <CarouselContent>
+                    {products.map((product) => (
+                      <CarouselItem
+                        key={product.id}
+                        className="basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                      >
+                        <Card
+                          className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300 cursor-pointer"
+                          onClick={() => navigate(`/products/${product.id}`)}
+                        >
+                          <div className="aspect-[4/3] overflow-hidden bg-muted">
+                            {product.image_url ? (
+                              <img
+                                src={product.image_url}
+                                alt={product.title}
+                                loading="lazy"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Package className="w-12 h-12 text-muted-foreground/40" />
+                              </div>
+                            )}
+                          </div>
+                          <CardContent className="p-5">
+                            <h3 className="font-display font-semibold text-lg text-foreground mb-1">
+                              {product.title}
+                            </h3>
+                            {product.description && (
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {product.description}
+                              </p>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </Carousel>
               </div>
             ) : (
               <div className="text-center text-muted-foreground py-12">
