@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Pencil, Upload, Save } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -18,7 +18,8 @@ const AdminProducts = () => {
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", description: "", category: "", sort_order: 0, product_range_id: "", video_url: "", specifications: "" });
+  const [form, setForm] = useState({ title: "", description: "", category: "", sort_order: 0, video_url: "", specifications: "" });
+  const [selectedRangeIds, setSelectedRangeIds] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const { data: products, isLoading } = useQuery({
@@ -34,6 +35,15 @@ const AdminProducts = () => {
     queryKey: ["admin-product-ranges"],
     queryFn: async () => {
       const { data, error } = await supabase.from("product_ranges").select("*").order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: assignments } = useQuery({
+    queryKey: ["admin-product-range-assignments"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("product_range_assignments").select("*");
       if (error) throw error;
       return data;
     },
@@ -58,22 +68,38 @@ const AdminProducts = () => {
         description: form.description,
         category: form.category,
         sort_order: form.sort_order,
-        product_range_id: form.product_range_id || null,
+        product_range_id: selectedRangeIds.length > 0 ? selectedRangeIds[0] : null,
         video_url: form.video_url || null,
         specifications: form.specifications || null,
         ...(image_url && { image_url }),
       };
 
+      let productId = editingId;
+
       if (editingId) {
         const { error } = await supabase.from("products").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("products").insert(payload);
+        const { data, error } = await supabase.from("products").insert(payload).select("id").single();
         if (error) throw error;
+        productId = data.id;
+      }
+
+      // Update range assignments
+      if (productId) {
+        // Delete existing assignments
+        await supabase.from("product_range_assignments").delete().eq("product_id", productId);
+        // Insert new ones
+        if (selectedRangeIds.length > 0) {
+          const rows = selectedRangeIds.map((rid) => ({ product_id: productId!, product_range_id: rid }));
+          const { error } = await supabase.from("product_range_assignments").insert(rows);
+          if (error) throw error;
+        }
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-product-range-assignments"] });
       toast({ title: editingId ? "Product updated" : "Product added" });
       closeDialog();
     },
@@ -87,6 +113,7 @@ const AdminProducts = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-product-range-assignments"] });
       toast({ title: "Product deleted" });
     },
   });
@@ -102,7 +129,8 @@ const AdminProducts = () => {
   const closeDialog = () => {
     setDialogOpen(false);
     setEditingId(null);
-    setForm({ title: "", description: "", category: "", sort_order: 0, product_range_id: "", video_url: "", specifications: "" });
+    setForm({ title: "", description: "", category: "", sort_order: 0, video_url: "", specifications: "" });
+    setSelectedRangeIds([]);
     setImageFile(null);
   };
 
@@ -113,16 +141,28 @@ const AdminProducts = () => {
       description: product.description || "",
       category: product.category || "",
       sort_order: product.sort_order || 0,
-      product_range_id: product.product_range_id || "",
       video_url: (product as any).video_url || "",
       specifications: (product as any).specifications || "",
     });
+    // Load range assignments for this product
+    const productAssignments = assignments?.filter((a) => a.product_id === product.id) || [];
+    setSelectedRangeIds(productAssignments.map((a) => a.product_range_id));
     setDialogOpen(true);
   };
 
-  const getRangeName = (rangeId: string | null) => {
-    if (!rangeId) return "—";
-    return ranges?.find((r) => r.id === rangeId)?.name || "—";
+  const getRangeNames = (productId: string) => {
+    const productAssignments = assignments?.filter((a) => a.product_id === productId) || [];
+    if (productAssignments.length === 0) return "—";
+    return productAssignments
+      .map((a) => ranges?.find((r) => r.id === a.product_range_id)?.name)
+      .filter(Boolean)
+      .join(", ") || "—";
+  };
+
+  const toggleRangeSelection = (rangeId: string) => {
+    setSelectedRangeIds((prev) =>
+      prev.includes(rangeId) ? prev.filter((id) => id !== rangeId) : [...prev, rangeId]
+    );
   };
 
   return (
@@ -144,7 +184,7 @@ const AdminProducts = () => {
                   <TableHead>Image</TableHead>
                   <TableHead>Title</TableHead>
                   <TableHead>Category</TableHead>
-                  <TableHead>Product Range</TableHead>
+                  <TableHead>Product Ranges</TableHead>
                   <TableHead>Active</TableHead>
                   <TableHead>Order</TableHead>
                   <TableHead>Actions</TableHead>
@@ -162,7 +202,7 @@ const AdminProducts = () => {
                     </TableCell>
                     <TableCell className="font-medium">{p.title}</TableCell>
                     <TableCell>{p.category}</TableCell>
-                    <TableCell>{getRangeName(p.product_range_id)}</TableCell>
+                    <TableCell className="max-w-[200px] truncate">{getRangeNames(p.id)}</TableCell>
                     <TableCell>
                       <Switch checked={p.is_active ?? true} onCheckedChange={(v) => toggleActive.mutate({ id: p.id, is_active: v })} />
                     </TableCell>
@@ -199,18 +239,21 @@ const AdminProducts = () => {
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
             </div>
             <div className="space-y-1.5">
-              <Label>Product Range (Category)</Label>
-              <Select value={form.product_range_id} onValueChange={(v) => setForm({ ...form, product_range_id: v === "none" ? "" : v })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a product range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No range</SelectItem>
-                  {ranges?.map((r) => (
-                    <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label>Product Ranges</Label>
+              <div className="border rounded-md p-3 space-y-2 max-h-48 overflow-y-auto">
+                {ranges?.length ? ranges.map((r) => (
+                  <div key={r.id} className="flex items-center gap-2">
+                    <Checkbox
+                      id={`range-${r.id}`}
+                      checked={selectedRangeIds.includes(r.id)}
+                      onCheckedChange={() => toggleRangeSelection(r.id)}
+                    />
+                    <label htmlFor={`range-${r.id}`} className="text-sm cursor-pointer">{r.name}</label>
+                  </div>
+                )) : (
+                  <p className="text-sm text-muted-foreground">No ranges available</p>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
