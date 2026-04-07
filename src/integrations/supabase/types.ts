@@ -116,6 +116,39 @@ export type Database = {
         }
         Relationships: []
       }
+      product_range_assignments: {
+        Row: {
+          id: string
+          product_id: string
+          product_range_id: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          product_range_id: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          product_range_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_range_assignments_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_range_assignments_product_range_id_fkey"
+            columns: ["product_range_id"]
+            isOneToOne: false
+            referencedRelation: "product_ranges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_ranges: {
         Row: {
           created_at: string | null
