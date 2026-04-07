@@ -20,7 +20,7 @@ const ProductDetail = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("*, product_ranges(name)")
+        .select("*")
         .eq("id", id!)
         .single();
       if (error) throw error;
@@ -29,9 +29,27 @@ const ProductDetail = () => {
     enabled: !!id,
   });
 
-  const youtubeEmbedUrl = product?.video_url
-    ? getYouTubeEmbedUrl(product.video_url)
-    : null;
+  const { data: rangeNames } = useQuery({
+    queryKey: ["product-range-names", id],
+    queryFn: async () => {
+      const { data: assignments, error: aErr } = await supabase
+        .from("product_range_assignments")
+        .select("product_range_id")
+        .eq("product_id", id!);
+      if (aErr) throw aErr;
+      if (!assignments?.length) return [];
+      const rangeIds = assignments.map((a) => a.product_range_id);
+      const { data: ranges, error: rErr } = await supabase
+        .from("product_ranges")
+        .select("name")
+        .in("id", rangeIds);
+      if (rErr) throw rErr;
+      return ranges?.map((r) => r.name) || [];
+    },
+    enabled: !!id,
+  });
+
+  const youtubeEmbedUrl = product?.video_url ? getYouTubeEmbedUrl(product.video_url) : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,14 +68,9 @@ const ProductDetail = () => {
             <div className="text-center text-muted-foreground py-20">Product not found.</div>
           ) : (
             <div className="grid md:grid-cols-2 gap-10">
-              {/* Image */}
               <div className="aspect-square rounded-xl overflow-hidden bg-muted">
                 {product.image_url ? (
-                  <img
-                    src={product.image_url}
-                    alt={product.title}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <Package className="w-20 h-20 text-muted-foreground/30" />
@@ -65,16 +78,13 @@ const ProductDetail = () => {
                 )}
               </div>
 
-              {/* Info */}
               <div className="flex flex-col gap-6">
-                {product.product_ranges && (
+                {rangeNames && rangeNames.length > 0 && (
                   <span className="text-sm font-semibold tracking-wider uppercase text-primary">
-                    {(product.product_ranges as any).name}
+                    {rangeNames.join(" · ")}
                   </span>
                 )}
-                <h1 className="font-display text-3xl lg:text-4xl font-bold text-foreground">
-                  {product.title}
-                </h1>
+                <h1 className="font-display text-3xl lg:text-4xl font-bold text-foreground">{product.title}</h1>
 
                 {product.description && (
                   <div>

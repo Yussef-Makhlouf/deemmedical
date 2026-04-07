@@ -16,10 +16,7 @@ const ProductsSection = () => {
   const { data: ranges, isLoading: rangesLoading } = useQuery({
     queryKey: ["public-product-ranges"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("product_ranges")
-        .select("*")
-        .order("sort_order");
+      const { data, error } = await supabase.from("product_ranges").select("*").order("sort_order");
       if (error) throw error;
       return data;
     },
@@ -28,11 +25,16 @@ const ProductsSection = () => {
   const { data: products, isLoading: productsLoading } = useQuery({
     queryKey: ["public-products"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("is_active", true)
-        .order("sort_order");
+      const { data, error } = await supabase.from("products").select("*").eq("is_active", true).order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: assignments } = useQuery({
+    queryKey: ["public-product-range-assignments"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("product_range_assignments").select("*");
       if (error) throw error;
       return data;
     },
@@ -40,12 +42,16 @@ const ProductsSection = () => {
 
   const isLoading = rangesLoading || productsLoading;
 
-  const groupedProducts = ranges?.map((range) => ({
-    ...range,
-    products: products?.filter((p) => p.product_range_id === range.id) || [],
-  }));
+  const groupedProducts = ranges?.map((range) => {
+    const rangeProductIds = assignments?.filter((a) => a.product_range_id === range.id).map((a) => a.product_id) || [];
+    return {
+      ...range,
+      products: products?.filter((p) => rangeProductIds.includes(p.id)) || [],
+    };
+  });
 
-  const uncategorized = products?.filter((p) => !p.product_range_id) || [];
+  const assignedProductIds = new Set(assignments?.map((a) => a.product_id) || []);
+  const uncategorized = products?.filter((p) => !assignedProductIds.has(p.id)) || [];
 
   return (
     <section id="products" className="py-20 lg:py-28">
@@ -128,12 +134,7 @@ const ProductCard = ({ product, index }: { product: any; index: number }) => {
     >
       <div className="aspect-[4/3] overflow-hidden bg-muted">
         {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={product.title}
-            loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+          <img src={product.image_url} alt={product.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <Package className="w-12 h-12 text-muted-foreground/40" />
