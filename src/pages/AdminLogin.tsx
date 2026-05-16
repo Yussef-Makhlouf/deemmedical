@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import deemLogo from "@/assets/deem-logo.jpg";
 
 const AdminLogin = () => {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -45,7 +45,10 @@ const AdminLogin = () => {
           <img src={deemLogo} alt="Deem" className="h-16 mx-auto" />
           <h1 className="font-display text-2xl font-bold text-foreground">Access Denied</h1>
           <p className="text-muted-foreground">Your account does not have admin privileges. Please contact the system administrator.</p>
-          <Button variant="outline" onClick={() => navigate("/")}>Back to Home</Button>
+          <div className="flex gap-2 justify-center">
+            <Button variant="outline" onClick={() => navigate("/")}>Back to Home</Button>
+            <Button onClick={signOut}>Sign Out</Button>
+          </div>
         </div>
       </div>
     );
