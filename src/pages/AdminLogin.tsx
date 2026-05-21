@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import deemLogo from "@/assets/deem-logo.jpg";
 
 const AdminLogin = () => {
-  const { user, isAdmin, loading, signIn, signUp } = useAuth();
+  const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -87,16 +87,12 @@ const AdminLogin = () => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4 max-w-md px-4">
           <img src={deemLogo} alt="Deem" className="h-16 mx-auto" />
-          <h1 className="font-display text-2xl font-bold text-foreground">
-            Access Denied
-          </h1>
-          <p className="text-muted-foreground">
-            Your account does not have admin privileges. Please contact the
-            system administrator.
-          </p>
-          <Button variant="outline" onClick={() => navigate("/")}>
-            Back to Home
-          </Button>
+          <h1 className="font-display text-2xl font-bold text-foreground">Access Denied</h1>
+          <p className="text-muted-foreground">Your account does not have admin privileges. Please contact the system administrator.</p>
+          <div className="flex gap-2 justify-center">
+            <Button variant="outline" onClick={() => navigate("/")}>Back to Home</Button>
+            <Button onClick={signOut}>Sign Out</Button>
+          </div>
         </div>
       </div>
     );
