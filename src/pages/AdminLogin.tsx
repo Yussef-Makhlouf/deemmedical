@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import deemLogo from "@/assets/deem-logo.jpg";
 
 const AdminLogin = () => {
-  const { user, isAdmin, loading, signOut } = useAuth();
+  const { user, isAdmin, loading, signIn, signUp, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
